@@ -148,7 +148,6 @@ private slots:
     void on_conver216_textEdited(const QString &arg1);
 
 
-    void on_ip_Search_2_clicked();
 
 private:
     Ui::net_tool *ui;
