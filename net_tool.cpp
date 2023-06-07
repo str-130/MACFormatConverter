@@ -15,6 +15,7 @@ net_tool::net_tool(QWidget *parent)
                                     QTabBar::tab{background-color:rgb(34,34,34);color:rgb(255,255,255);font:11pt 'Microsoft YaHei UI'}\
                                     QTabBar::tab::selected{background-color:rgb(100,100,100);color:rgb(0,0,0);font:11pt 'Microsoft YaHei UI'}");
     ui->txtitpt->setPlaceholderText("每行输入一个MAC");
+    ui->net_input->setPlaceholderText("每行输入一个需要计算的地址,例如：\n10.1.1.1/8\n8.8.8.8 255.255.255.252");
     connect(ui->print_Upper, SIGNAL(clicked()), this, SLOT(print_Upper()));
     connect(ui->print_Lower, SIGNAL(clicked()), this, SLOT(print_Lower()));
     connect(ui->mode1, SIGNAL(clicked()), this, SLOT(mode1()));
@@ -40,14 +41,14 @@ net_tool::net_tool(QWidget *parent)
     ui->conver216->setValidator(base_16_validator);
     //16进制区域只允许输入0至f
 }
-
+//---------------------------base_convertion--------------------------
 
 
 net_tool::~net_tool()
 {
     delete ui;
 }
-//mac_calc
+//-----------------------------mac_calc-------------------------------------------
 
 void net_tool::To_upper()
 {
@@ -745,4 +746,149 @@ void net_tool::on_conver216_textEdited(const QString &arg1)
 
 
 
+
+
+//-------------------net_calc---------------------
+
+void net_tool::net_check(QStringList &net_txt_list)
+{
+    QString net_address = "";
+    QString pattern1 = " *(\\d+\\.\\d+\\.\\d+\\.\\d+)[ \\/]{1,100}(\\d+) *";
+    QString pattern2 = " *(\\d+\\.\\d+\\.\\d+\\.\\d+)[ \\/]{1,100}(\\d+\\.\\d+\\.\\d+\\.\\d+) *";
+    QRegularExpression ip_tmp1(pattern1);
+    QRegularExpression ip_tmp2(pattern2);
+    QStringList num_tmp;
+
+
+    for (int i = 0; i < (net_txt_list.length()); ++i) {
+        int yanma = 0,yanma_tmp = 0;
+        QRegularExpressionMatch ip_match1 = ip_tmp1.match(net_txt_list[i]);
+        QRegularExpressionMatch ip_match2 = ip_tmp2.match(net_txt_list[i]);
+        num_tmp.clear();
+        if(ip_match2.hasMatch())
+        {
+//            qDebug() << "test2";
+//            qDebug() << ip_match2.captured(1) + '/' + ip_match2.captured(2) ;
+
+            num_tmp = (ip_match2.captured(1) + '.' + ip_match2.captured(2)).split('.');
+            if (!((num_tmp[7].toInt() <= num_tmp[6].toInt()) && (num_tmp[6].toInt() <= num_tmp[5].toInt()) && (num_tmp[5].toInt() <= num_tmp[4].toInt())))
+            {
+                net_txt_list[i] = "error";
+                continue;
+            }
+            for (int j = 0; j < num_tmp.length(); ++j) {
+                if ((num_tmp[j].toInt() > 255) || (num_tmp[j].toInt() < 0))
+                {
+                    net_txt_list[i] = "error";
+                    break;
+                }
+                else if (j >= 4)
+                {
+                    if(!(num_tmp[j].toInt()==255 || num_tmp[j].toInt()==254||num_tmp[j].toInt()==252||num_tmp[j].toInt()==248||num_tmp[j].toInt()==240||num_tmp[j].toInt()==224||num_tmp[j].toInt()==192||num_tmp[j].toInt()==128||num_tmp[j].toInt()==0)){
+                        net_txt_list[i] = "error";
+                        break;
+                    }
+                }
+            }
+            if (net_txt_list[i] != "error")
+            {
+                for (int l = 4; l < 8; ++l) {
+                    yanma_tmp = 8 - log2(256 - num_tmp[l].toInt());
+                    yanma = yanma + yanma_tmp;
+                }
+                net_txt_list[i] = ip_match2.captured(1) + '/' + QString::number(yanma);
+            }
+
+        }
+        else if (ip_match1.hasMatch())
+        {
+//            qDebug() << "test1";
+//            qDebug() << ip_match1.captured(1) + ' ' + ip_match1.captured(2);
+            num_tmp = ip_match1.captured(1).split('.');
+            for (int k = 0; k < num_tmp.length(); ++k) {
+                if ((num_tmp[k].toInt() > 255) || (num_tmp[k].toInt() < 0) || (ip_match1.captured(2).toInt() > 32) || (ip_match1.captured(2).toInt() < 0))
+                {
+                    net_txt_list[i] = "error";
+                    break;
+                }
+            }
+            if (net_txt_list[i] != "error")
+            {
+                net_txt_list[i] = ip_match1.captured(1) + '/' + ip_match1.captured(2);
+            }
+        }
+        else
+        {
+            net_txt_list[i] = "error";
+        }
+
+    }
+}
+
+
+void net_tool::on_net_input_textChanged()
+{
+    net_calc_output_txt = "";
+    net_txt = ui->net_input->toPlainText();//读取左边数据
+    net_txt_list = net_txt.split('\n');
+    net_check(net_txt_list);
+}
+
+
+
+
+void net_tool::on_net_calc_clicked()
+{
+    QStringList out_put_net = net_txt_list;
+    for (int net_num = 0; net_num < out_put_net.length(); ++net_num) {
+        if (out_put_net[net_num] == "error")
+        {
+            continue;
+        }
+        QStringList ip_list = out_put_net[net_num].split(QRegularExpression("[\\./]"));
+        for (int ip_num = 0; ip_num < ip_list.length(); ++ip_num) {
+            int A = ip_list[0].toInt(),B = ip_list[1].toInt(),C = ip_list[2].toInt(),D = ip_list[3].toInt(),E = ip_list[4].toInt();
+            int mi = 1;
+            if (E <= 8)
+            {
+                mi = pow(2, 8 - E);
+                A = ip_list[0].toInt() - ip_list[0].toInt() % mi;
+                out_put_net[net_num] =  QString::number(A) + ".0.0.0/" + QString::number(E);
+            }
+            else if (E > 8 && E <= 16)
+            {
+                mi = pow(2, 16 - E);
+                B = ip_list[1].toInt() - ip_list[1].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + ".0.0/" + QString::number(E);
+            }
+            else if (E > 16 && E <= 24)
+            {
+                mi = pow(2, 24 - E);
+                C = ip_list[2].toInt() - ip_list[2].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + ".0/" + QString::number(E);
+            }
+            else if (E > 24 && E <= 32)
+            {
+                mi = pow(2, 32 - E);
+                D = ip_list[3].toInt() - ip_list[3].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + '.' + QString::number(D) + '/' + QString::number(E);
+            }
+        }
+    }
+    QString out_txt = "";
+    for (int i = 0; i < out_put_net.length(); ++i) {
+        out_txt = out_txt + out_put_net[i] + '\n';
+
+    }
+    ui ->net_Output->setText(out_txt);
+
+}
+
+
+void net_tool::on_net_calc_clear_clicked()
+{
+    ui->net_input->clear();
+    ui->net_Output->clear();
+    net_txt_list.clear();
+}
 

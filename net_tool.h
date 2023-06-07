@@ -12,8 +12,7 @@
 #include <QRegularExpressionValidator>
 #include <QByteArray>
 #include <QTabWidget>
-
-
+#include <cmath>
 
 //#include <algorithm>
 
@@ -86,6 +85,15 @@ public:
 
 //---------base_covertion-----------
 
+//-------------net_calc--------------
+    QString net_txt = "";
+    QStringList net_txt_list;
+    QString net_calc_output_txt = "";
+
+
+
+
+
 signals:
 
 public slots:
@@ -148,6 +156,17 @@ private slots:
     void on_conver216_textEdited(const QString &arg1);
 
 
+//-----------net_calc----------------
+
+
+
+
+    void net_check(QStringList &net_txt_list);
+
+    void on_net_input_textChanged();
+    void on_net_calc_clicked();
+
+    void on_net_calc_clear_clicked();
 
 private:
     Ui::net_tool *ui;
