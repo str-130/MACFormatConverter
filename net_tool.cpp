@@ -884,6 +884,56 @@ void net_tool::on_net_calc_clicked()
 
 }
 
+void net_tool::on_net_range_clicked()
+{
+    QStringList out_put_net = net_txt_list;
+    for (int net_num = 0; net_num < out_put_net.length(); ++net_num) {
+        if (out_put_net[net_num] == "error")
+        {
+            continue;
+        }
+        QStringList ip_list = out_put_net[net_num].split(QRegularExpression("[\\./]"));
+        for (int ip_num = 0; ip_num < ip_list.length(); ++ip_num) {
+            int A = ip_list[0].toInt(),B = ip_list[1].toInt(),C = ip_list[2].toInt(),D = ip_list[3].toInt(),E = ip_list[4].toInt();
+            int mi = 1;
+            if (E <= 8)
+            {
+                mi = pow(2, 8 - E);
+                A = ip_list[0].toInt() - ip_list[0].toInt() % mi;
+                out_put_net[net_num] =  QString::number(A) + ".0.0.0/" + QString::number(E);
+            }
+            else if (E > 8 && E <= 16)
+            {
+                mi = pow(2, 16 - E);
+                B = ip_list[1].toInt() - ip_list[1].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + ".0.0/" + QString::number(E);
+            }
+            else if (E > 16 && E <= 24)
+            {
+                mi = pow(2, 24 - E);
+                C = ip_list[2].toInt() - ip_list[2].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + ".0/" + QString::number(E);
+            }
+            else if (E > 24 && E <= 32)
+            {
+                mi = pow(2, 32 - E);
+                D = ip_list[3].toInt() - ip_list[3].toInt() % mi;
+                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + '.' + QString::number(D) + '/' + QString::number(E);
+            }
+        }
+    }
+    QString out_txt = "";
+    for (int i = 0; i < out_put_net.length(); ++i) {
+        out_txt = out_txt + out_put_net[i] + '\n';
+
+    }
+
+
+
+
+    ui ->net_Output->setText(out_txt);
+
+}
 
 void net_tool::on_net_calc_clear_clicked()
 {

@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string extracomment="by str130">MAC格式转换 v1.06</string>
+   <string extracomment="by str130">MAC格式转换 v1.07</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(34, 34, 34);
@@ -252,7 +252,7 @@ color: rgb(255, 255, 255);</string>
      <string notr="true">border-top-color: rgb(34, 34, 34);</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="movable">
      <bool>false</bool>
@@ -911,7 +911,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>410</x>
-        <y>250</y>
+        <y>330</y>
         <width>111</width>
         <height>31</height>
        </rect>
@@ -932,6 +932,33 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
        <string>清空</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="net_range">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>180</y>
+        <width>111</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Microsoft YaHei UI Light</family>
+        <pointsize>11</pointsize>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(61, 61, 61);</string>
+      </property>
+      <property name="text">
+       <string>计算地址范围</string>
       </property>
      </widget>
     </widget>

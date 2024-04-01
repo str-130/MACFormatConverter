@@ -165,7 +165,7 @@ private slots:
 
     void on_net_input_textChanged();
     void on_net_calc_clicked();
-
+    void on_net_range_clicked();
     void on_net_calc_clear_clicked();
 
 private:
