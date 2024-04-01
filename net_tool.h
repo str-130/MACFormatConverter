@@ -13,6 +13,8 @@
 #include <QByteArray>
 #include <QTabWidget>
 #include <cmath>
+#include <bitset>
+#include <sstream>
 
 //#include <algorithm>
 

@@ -851,7 +851,7 @@ void net_tool::on_net_calc_clicked()
             int mi = 1;
             if (E <= 8)
             {
-                mi = pow(2, 8 - E);
+                mi = pow(2, 8 - E); //计算2的 8-E
                 A = ip_list[0].toInt() - ip_list[0].toInt() % mi;
                 out_put_net[net_num] =  QString::number(A) + ".0.0.0/" + QString::number(E);
             }
@@ -886,13 +886,14 @@ void net_tool::on_net_calc_clicked()
 
 void net_tool::on_net_range_clicked()
 {
-    QStringList out_put_net = net_txt_list;
-    for (int net_num = 0; net_num < out_put_net.length(); ++net_num) {
-        if (out_put_net[net_num] == "error")
+    QStringList out_start_net = net_txt_list;
+    QStringList out_end_net = net_txt_list;
+    for (int net_num = 0; net_num < out_start_net.length(); ++net_num) {
+        if (out_start_net[net_num] == "error")
         {
             continue;
         }
-        QStringList ip_list = out_put_net[net_num].split(QRegularExpression("[\\./]"));
+        QStringList ip_list = out_start_net[net_num].split(QRegularExpression("[\\./]"));
         for (int ip_num = 0; ip_num < ip_list.length(); ++ip_num) {
             int A = ip_list[0].toInt(),B = ip_list[1].toInt(),C = ip_list[2].toInt(),D = ip_list[3].toInt(),E = ip_list[4].toInt();
             int mi = 1;
@@ -900,31 +901,36 @@ void net_tool::on_net_range_clicked()
             {
                 mi = pow(2, 8 - E);
                 A = ip_list[0].toInt() - ip_list[0].toInt() % mi;
-                out_put_net[net_num] =  QString::number(A) + ".0.0.0/" + QString::number(E);
+                out_start_net[net_num] =  QString::number(A) + ".0.0.0";
+                out_end_net[net_num] =  QString::number(A + mi - 1) + ".255.255.255";
             }
             else if (E > 8 && E <= 16)
             {
                 mi = pow(2, 16 - E);
                 B = ip_list[1].toInt() - ip_list[1].toInt() % mi;
-                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + ".0.0/" + QString::number(E);
+                out_start_net[net_num] = QString::number(A) + '.' + QString::number(B) + ".0.0";
+                out_end_net[net_num] = QString::number(A) + '.' + QString::number(B + mi - 1) + ".255.255";
             }
             else if (E > 16 && E <= 24)
             {
                 mi = pow(2, 24 - E);
                 C = ip_list[2].toInt() - ip_list[2].toInt() % mi;
-                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + ".0/" + QString::number(E);
+                out_start_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + ".0";
+                out_end_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C + mi - 1) + ".255";
             }
             else if (E > 24 && E <= 32)
             {
                 mi = pow(2, 32 - E);
                 D = ip_list[3].toInt() - ip_list[3].toInt() % mi;
-                out_put_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + '.' + QString::number(D) + '/' + QString::number(E);
+                out_start_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + '.' + QString::number(D);
+                out_end_net[net_num] = QString::number(A) + '.' + QString::number(B) + '.' + QString::number(C) + '.' + QString::number(D + mi - 1);
             }
         }
     }
     QString out_txt = "";
-    for (int i = 0; i < out_put_net.length(); ++i) {
-        out_txt = out_txt + out_put_net[i] + '\n';
+    QStringList address_group;
+    for (int i = 0; i < out_start_net.length(); ++i) {
+        out_txt = out_txt + out_start_net[i] + " ~ " + out_end_net[i]  + '\n';
 
     }
 
