@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>data/oui.csv</file>
-        <file>data/ip_merge.csv</file>
         <file>data/pic001.png</file>
     </qresource>
 </RCC>

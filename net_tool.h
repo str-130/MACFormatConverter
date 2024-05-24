@@ -6,15 +6,12 @@
 #include <QMainWindow>
 #include <qdir.h>
 #include <QMessageBox>
-#include <vector>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
 #include <QByteArray>
 #include <QTabWidget>
-#include <cmath>
-#include <bitset>
-#include <sstream>
+
 
 //#include <algorithm>
 
@@ -124,19 +121,18 @@ private slots:
     void mac_format(int spli_num, QString separator);
 
 //----------ip_source-----------------------
-    void on_ip_Input_textChanged();
-    void ipToint();
-    void intToip();
-    //bool conDB();
-    void ip_source_Search();
-    void read_ip_merge();
-    void on_ip_Search_clicked();
-    void on_clear_ip_source_clicked();
-    void on_clear_ip_memory_clicked();
-    void on_IPtoint_clicked();
-    void on_inttoIP_clicked();
+    // void on_ip_Input_textChanged();
 
-    int lower_bound(QVector<QVector<QString>> ip_merge , unsigned int target);
+
+    // //bool conDB();
+    // void ip_source_Search();
+    // void read_ip_merge();
+    // void on_ip_Search_clicked();
+    // void on_clear_ip_source_clicked();
+    // void on_clear_ip_memory_clicked();
+
+
+    // int lower_bound(QVector<QVector<QString>> ip_merge , unsigned int target);
 
 
 //-----------base_convertion----------------
@@ -169,6 +165,12 @@ private slots:
     void on_net_calc_clicked();
     void on_net_range_clicked();
     void on_net_calc_clear_clicked();
+    void on_net_mask_clicked();
+
+    void ipToint();
+    void intToip();
+    void on_IPtoint_clicked();
+    void on_inttoIP_clicked();
 
 private:
     Ui::net_tool *ui;
@@ -178,41 +180,6 @@ class Calc_fun : public QMainWindow
 {
 
 };
-
-
-//class Ip_source : public QMainWindow
-//{
-//    Q_OBJECT
-
-//public:
-//    Ip_source(QWidget *parent = nullptr);
-//    ~Ip_source();
-//    QString read_ip = "";
-//    QStringList read_ip_list;
-//    QString tmp_read_ip= "";
-//    //QList<QVector<QString>> Mac_Vendor;
-//    //QVector<QString> result_vendor;
-//    //定义MAC格式转换结果
-//    //定义全局变量以保证所有函数都能修改
-//    QByteArray byteTmp;//定义流，用于QString转换
-//    char *ip_format;
-
-
-//signals:
-
-//public slots:
-
-
-
-
-
-//private slots:
-//    void on_ip_Input_textChanged();
-
-//private:
-//    Ui::net_tool *ui;
-//};
-
 
 
 
